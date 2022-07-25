@@ -17,19 +17,13 @@ namespace IdentityEntityFrameworkCore.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IConfiguration _configuration;
         private readonly ITokenService _tokenService;
-        private readonly RoleManager<IdentityRole> _roleManager;
 
         public AccountController(IUserService userService,
-            IConfiguration configuration,
-            ITokenService tokenService,
-            RoleManager<IdentityRole> roleManager)
+            ITokenService tokenService)
         {
             _userService = userService;
-            _configuration = configuration;
             _tokenService = tokenService;
-            _roleManager = roleManager;
         }
 
         [AllowAnonymous]
