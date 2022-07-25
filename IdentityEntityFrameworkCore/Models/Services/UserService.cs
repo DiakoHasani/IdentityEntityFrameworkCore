@@ -119,6 +119,27 @@ namespace IdentityEntityFrameworkCore.Models.Services
             return _userManager.Users.Where(a => a.UserName.Equals(userName)).Any();
         }
 
+        public bool CheckExpireLoginAndRefreshToken(string userId, string refreshToken)
+        {
+            var user = GetUserById(userId);
+            if (user is null)
+            {
+                return false;
+            }
+
+            if (!user.RefreshToken.Equals(refreshToken))
+            {
+                return false;
+            }
+
+            if (user.RefreshTokenExpiryTime < DateTime.Now)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public ApplicationUser GetUserByEmail(string email)
         {
             return _userManager.Users.Where(a => a.Email.Equals(email)).FirstOrDefault();
@@ -223,5 +244,6 @@ namespace IdentityEntityFrameworkCore.Models.Services
         string WriteJwtToken(string userId, DateTime expiredTime);
         Task<ResultLoginModel> Login(LoginBody model);
         Task<bool> UpdateRefreshToken(UpdateRefreshToken model);
+        bool CheckExpireLoginAndRefreshToken(string userId,string refreshToken);
     }
 }

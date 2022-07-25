@@ -46,7 +46,7 @@ namespace IdentityEntityFrameworkCore.Controllers
             var accessToken = _tokenService.GenerateAccessToken(claims);
             var refreshToken = _tokenService.GenerateRefreshToken();
 
-            if (! await _userService.UpdateRefreshToken(new UpdateRefreshToken
+            if (!await _userService.UpdateRefreshToken(new UpdateRefreshToken
             {
                 RefreshToken = refreshToken,
                 RefreshTokenExpiryTime = DateTime.Now.AddDays(7),
@@ -88,9 +88,9 @@ namespace IdentityEntityFrameworkCore.Controllers
             var principal = _tokenService.GetPrincipalFromExpiredToken(tokenApiModel.AccessToken);
             var userId = principal.Identity.Name;
 
-            if (!_userService.CheckExistUserById(userId))
+            if (!_userService.CheckExpireLoginAndRefreshToken(userId, tokenApiModel.RefreshToken))
             {
-                return NotFound("چنین کاربری یافت نشد");
+                return Unauthorized("لطفا لاگین کنید");
             }
 
             var newAccessToken = _tokenService.GenerateAccessToken(principal.Claims);
